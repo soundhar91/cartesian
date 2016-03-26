@@ -11,8 +11,8 @@ body {
 }
 
 .graph {
-  height: 1600px;
-  width: 2000px;
+  height: 500px;
+  width: 1000px;
 }
 
 .graph .grid {
@@ -59,4 +59,3 @@ body {
 			fill:	#fff;
 			pointer-events: none;
 		}
-  

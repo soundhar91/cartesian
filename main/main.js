@@ -11,7 +11,6 @@ var width,height;
 function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
-
 function init(evt)
 {
     if ( window.svgDocument == null )
@@ -84,10 +83,7 @@ function zoomoutHandler(e)
 	 d.attr('transform',"translate(-10,-10)");
 	 $("body").html($("body").html());	 
 }
-function Translate()
-{
-	
-}
+
 // testing 
 var Points= [];
 var Coordinates=[];
