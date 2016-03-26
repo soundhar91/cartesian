@@ -1,0 +1,62 @@
+body {
+  font-family: 'Open Sans', sans-serif;
+}
+
+.graph .labels.x-labels {
+  text-anchor: middle;
+}
+
+.graph .labels.y-labels {
+  text-anchor: end;
+}
+
+.graph {
+  height: 1600px;
+  width: 2000px;
+}
+
+.graph .grid {
+  stroke: #ccc;
+  stroke-dasharray: 0;
+  stroke-width: 1;
+}
+
+.labels {
+  font-size: 13px;
+}
+
+.label-title {
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 12px;
+  fill: black;
+}
+
+.data {
+  fill: red;
+  stroke-width: 1;
+}
+
+
+  		.territory:hover{
+			fill:           #22aa44;
+		}
+  		.compass{
+  			fill:			#fff;
+  			stroke:			#000;
+  			stroke-width:	1.5;
+  		}
+   		.button{
+		    fill:           	#225EA8;
+			stroke:   			#0C2C84;
+			stroke-miterlimit:	6;
+			stroke-linecap:		round;
+		}
+		.button:hover{
+			stroke-width:   	2;
+		}
+		.plus-minus{
+			fill:	#fff;
+			pointer-events: none;
+		}
+  
