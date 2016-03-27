@@ -7,6 +7,7 @@ var canvasXMin=90,canvasXMax=20000,
 	canvasYMin=5,canvasYMax=15000;
 var transMatrix = [1,0,0,1,0,0];
 var width,height;
+var leftRef,leftMostPix,completed;
 
 function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -16,7 +17,6 @@ function init(evt)
     if ( window.svgDocument == null )
     {
         svgDoc = evt.target.ownerDocument;
-
     }
     svgref = svgDoc;
     mapMatrix = svgDoc.getElementById("cmap");
@@ -30,6 +30,7 @@ function pan(dx, dy)
   mapMatrix = svgref.getElementById("cmap");          
   newMatrix = "matrix(" +  transMatrix.join(' ') + ")";
   mapMatrix.setAttributeNS(null, "transform", newMatrix);
+  updateRight(-dx);
 }
 
 function zoom(scale)
@@ -43,45 +44,65 @@ function zoom(scale)
 	mapMatrix = svgref.getElementById("cmap");       
 	newMatrix = "matrix(" +  transMatrix.join(' ') + ")";
 	mapMatrix.setAttributeNS(null, "transform", newMatrix);
+	updateZoom(transMatrix[0],transMatrix[2],transMatrix[4]);
 }
-
-// work out percentage as a result of total
-var numberFixer = function(num){
-  var result = ((num * 100) / total);
-  result = ((result * circumf) / 100);
-  return result;
-}
-
-var setPieChart = function(name){
-	 var number = map[name],
-	     fixedNumber = numberFixer(number),
-	     result = fixedNumber + ' ' + circumf;
-	 pie.style.strokeDasharray = result;
-}
-
-
-
-var setActiveClass = function(el) {
-	  for(var i = 0; i < buttons.children.length; i++) {
-	    buttons.children[i].classList.remove(activeClass);
-	    el.classList.add(activeClass);
-	 }
-}
-function zoominHandler( e)
+function updateZoom(a,b,c)
 {
-	 console.log("zoom in");
-	 var d =$(".data");
-	 d.attr('transform',"translate(10,10)")
-	  .attr('transform',"scale(2)");
-	 $("body").html($("body").html());
+	if(!completed)
+	{
+		var i = leftRef;
+		var d = $(".data");
+		for(;i < Coordinates.length;i= i+1)
+		{
+			  var newEl = document.createElementNS('http://www.w3.org/2000/svg','circle');
+			  	if(Coordinates[i].x * a + Coordinates[i].y*b + c <= 1000)
+			  	{
+			      newEl.setAttribute('cx',Coordinates[i].x);
+			      newEl.setAttribute('cy',Coordinates[i].y);
+			      newEl.setAttribute('r',5);
+			      d.append(newEl);
+			  	}
+			  	else
+			  	{
+			  		leftRef=i;
+			  		leftMostPix=Coordinates[i-1].x;
+			  		break;
+			  	}
+			
+		}
+		if(i == Coordinates.length) {
+			completed=true;
+		}
+	}	
 }
-
-function zoomoutHandler(e)
+function updateRight(buffer)
 {
-	 console.log("zoom out");
-	 var d =$(".data");
-	 d.attr('transform',"translate(-10,-10)");
-	 $("body").html($("body").html());	 
+	if(!completed)
+	{
+		var i = leftRef;
+		var d = $(".data");
+		for(;i < Coordinates.length;i= i+1)
+		{
+			  var newEl = document.createElementNS('http://www.w3.org/2000/svg','circle');
+			  	if(Coordinates[i].x <= leftMostPix+buffer)
+			  	{
+			      newEl.setAttribute('cx',Coordinates[i].x);
+			      newEl.setAttribute('cy',Coordinates[i].y);
+			      newEl.setAttribute('r',5);
+			      d.append(newEl);
+			  	}
+			  	else
+			  	{
+			  		leftRef=i;
+			  		leftMostPix=Coordinates[i-1].x;
+			  		break;
+			  	}
+			
+		}
+		if(i == Coordinates.length) {
+			completed=true;
+		}
+	}
 }
 
 // testing 
@@ -98,22 +119,43 @@ $( document ).ready(function() {
 
 function updateHtml()
 {
+	
+	if(typeof(Worker) !== "undefined") {
+
+	} else {
+	    
+	}
 	Points.forEach(function(element,index,ar){
 		var x = getRandomInt(canvasXMin,canvasXMax);
 		var y = getRandomInt(canvasYMin,canvasYMax);
 		Coordinates.push({ "x" : x ,"y":y});
 	});
+	Coordinates = Coordinates.sort( function(a , b){
+		  if (a.x == b.x) return a.y - b.y;
+		  return a.x - b.x;
+	}
+	);
+	
 	var d = $(".data");
 	mapMatrix = $(".data");
 	var i =0;
 	for(i =0; i < Coordinates.length;i=i+1){
-		  var newEl = $('<circle></circle>')
-		  			  .attr('cx',Coordinates[i].x)
-		  			  .attr('cy',Coordinates[i].y)
-		  			  .attr('r',5);
-		  d.append(newEl);
+		
+		  var newEl = document.createElementNS('http://www.w3.org/2000/svg','circle');
+		  	if(Coordinates[i].x <= 1000)
+		  	{
+		      newEl.setAttribute('cx',Coordinates[i].x);
+		      newEl.setAttribute('cy',Coordinates[i].y);
+		      newEl.setAttribute('r',5);
+		      d.append(newEl);
+		  	}
+		  	else
+		  	{
+		  		leftRef=i;
+		  		leftMostPix=Coordinates[i-1].x;
+		  		break;
+		  	}
 	}
-	$("body").html($("body").html());
-	// when you click a button setPieChart and setActiveClass
+
 	
 }
