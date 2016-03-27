@@ -110,20 +110,16 @@ var Points= [];
 var Coordinates=[];
 $( document ).ready(function() {
 	
-//	$.ajax({
-//		url: "https://rambo-test.cartodb.com:443/api/v2/sql?q=select * from public.mnmappluto",
-//		
-//			
-//	})
-//	.done(function(data){
-//		Points = data.rows;
-//		updateHtml(); 
-//	});
-    $.getJSON("../data/test.json",function(json){
-    	Points = json.rows;
-    	updateHtml();   	
-    	}
-    ); 
+	$.ajax({
+		url: "https://rambo-test.cartodb.com:443/api/v2/sql?q=select * from public.mnmappluto",
+		
+			
+	})
+	.done(function(data){
+		Points = data.rows;
+		updateHtml(); 
+	});
+
 }
 );
 
