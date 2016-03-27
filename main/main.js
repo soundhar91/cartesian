@@ -8,7 +8,7 @@ var canvasXMin=90,canvasXMax=20000,
 var transMatrix = [1,0,0,1,0,0];
 var width,height;
 var leftRef,leftMostPix,completed;
-
+var zwidth=1000;
 function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
@@ -30,7 +30,7 @@ function pan(dx, dy)
   mapMatrix = svgref.getElementById("cmap");          
   newMatrix = "matrix(" +  transMatrix.join(' ') + ")";
   mapMatrix.setAttributeNS(null, "transform", newMatrix);
-  updateRight(-dx);
+  updateRight( -dx);
 }
 
 function zoom(scale)
@@ -44,18 +44,18 @@ function zoom(scale)
 	mapMatrix = svgref.getElementById("cmap");       
 	newMatrix = "matrix(" +  transMatrix.join(' ') + ")";
 	mapMatrix.setAttributeNS(null, "transform", newMatrix);
-	updateZoom(transMatrix[0],transMatrix[2],transMatrix[4]);
+	updateZoom(transMatrix[0],transMatrix[2],transMatrix[4],scale);
 }
-function updateZoom(a,b,c)
+function updateZoom(a,b,c,scale)
 {
 	if(!completed)
 	{
 		var i = leftRef;
-		var d = $(".data");
+		var d = $(".data"); zwidth = zwidth+(zwidth*scale);
 		for(;i < Coordinates.length;i= i+1)
 		{
 			  var newEl = document.createElementNS('http://www.w3.org/2000/svg','circle');
-			  	if(Coordinates[i].x * a + Coordinates[i].y*b + c <= 1000)
+			  	if(Coordinates[i].x * a + Coordinates[i].y*b + c <= zwidth)
 			  	{
 			      newEl.setAttribute('cx',Coordinates[i].x);
 			      newEl.setAttribute('cy',Coordinates[i].y);
@@ -109,6 +109,16 @@ function updateRight(buffer)
 var Points= [];
 var Coordinates=[];
 $( document ).ready(function() {
+	
+//	$.ajax({
+//		url: "https://rambo-test.cartodb.com:443/api/v2/sql?q=select * from public.mnmappluto",
+//		
+//			
+//	})
+//	.done(function(data){
+//		Points = data.rows;
+//		updateHtml(); 
+//	});
     $.getJSON("../data/test.json",function(json){
     	Points = json.rows;
     	updateHtml();   	
